@@ -43,8 +43,8 @@ describe Oystercard do
       expect(card.in_journey?).to be_truthy
     end
     it "prevents touching in if card does not have enough money" do
-      no_balance = card.touch_in
-      expect(no_balance).to eq "Not enough money"
+      no_money_card = Oystercard.new(0)
+      expect(no_money_card.touch_in).to eq "Not enough money"
     end
   end
 
