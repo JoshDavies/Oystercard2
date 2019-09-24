@@ -1,14 +1,13 @@
-
 describe "User Stories" do
   # In order to use public transport
   # As a customer
   # I want money on my card
   it " has money on the card" do
-    my_card = Oystercard.new
-    amount = 20
+    my_card = Oystercard.new(0.00)
+    amount = 20.00
     my_card.top_up(amount)
     new_balance = my_card.balance
-    expect(new_balance).to eq amount
+    expect(new_balance).to eq (20.00)
   end
 
   # In order to keep using public transport
