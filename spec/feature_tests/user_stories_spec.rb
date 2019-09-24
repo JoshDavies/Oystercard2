@@ -7,7 +7,8 @@ describe "User Stories" do
     my_card = Oystercard.new
     amount = 20
     my_card.add_amount(amount)
-    expect { my_card.balance }.to eq amount
+    new_balance = my_card.balance
+    expect(new_balance).to eq amount
   end
 
   # In order to keep using public transport
