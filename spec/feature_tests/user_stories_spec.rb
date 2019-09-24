@@ -6,7 +6,7 @@ describe "User Stories" do
   it " has money on the card" do
     my_card = Oystercard.new
     amount = 20
-    my_card.add_amount(amount)
+    my_card.top_up(amount)
     new_balance = my_card.balance
     expect(new_balance).to eq amount
   end
@@ -17,7 +17,7 @@ describe "User Stories" do
 
   # In order to protect my money
   # As a customer
-  # I don't want to put too much money on my card
+  # I want a maximum limit (of £90)on my card
 
   # In order to pay for my journey
   # As a customer
