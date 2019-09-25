@@ -2,13 +2,18 @@ require "oystercard"
 
 describe Oystercard do
   let(:card) { Oystercard.new }
-  let(:station) { double("Station") }
+  let(:entry_station) { double("Station") }
+  let(:exit_station) { double("Station") }
+  let(:journey){ {entry_station: entry_station, exit_station: exit_station} }
 
-  describe "#balance" do
+  describe "#initialize" do
     it "displays the current balance" do
       new_card = Oystercard.new
       expect(new_card.balance).to eq described_class::DEFAULT_BALANCE
     end
+     it "tests for an empty journey history" do
+       expect(card.previous_journeys).to be_empty
+     end
   end
 
   describe "#top_up" do
@@ -33,40 +38,47 @@ describe Oystercard do
   describe "#touch_in" do
     it "sets @journey to true" do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in(station)
+      card.touch_in(entry_station)
       expect(card.in_journey?).to be_truthy
     end
     it "prevents touching in if card does not have enough money" do
       empty_card = Oystercard.new(0.00)
-      expect(empty_card.touch_in(station)).to eq "Not enough money"
+      expect(empty_card.touch_in(entry_station)).to eq "Not enough money"
     end
 
     it 'remembers entry station after touch in' do
       card.top_up(5)
-      card.touch_in(station)
-      expect(card.entry_station).to eq station
+      card.touch_in(entry_station)
+      expect(card.entry_station).to be entry_station
     end
   end
 
   describe "#touch_out" do
     it "sets @journey to true" do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in(station)
-      card.touch_out
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
       expect(card.in_journey?).to be_falsey
     end
 
     it "charges card on touch out" do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in(station)
-      expect{ card.touch_out }.to change{ card.balance }.by(-Oystercard::MINIMUM_AMOUNT)
+      card.touch_in(entry_station)
+      expect{ card.touch_out(exit_station) }.to change{ card.balance }.by(-Oystercard::MINIMUM_AMOUNT)
     end
 
     it 'sets station to nil after touch out' do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in(station)
-      card.touch_out
-      expect(subject.entry_station).to eq nil
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.entry_station).to eq nil
+    end
+
+    it 'checks that touching in and out creates one journey' do
+      card.top_up(described_class::MINIMUM_AMOUNT)
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.previous_journeys).to eq [journey]
     end
   end
 end
