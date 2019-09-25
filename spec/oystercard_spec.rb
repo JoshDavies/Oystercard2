@@ -23,14 +23,6 @@ describe Oystercard do
     end
   end
 
-  describe "#deduct" do
-    it "deducts fare from the balance" do
-      card.top_up(described_class::MINIMUM_AMOUNT)
-      fare = described_class::MINIMUM_AMOUNT
-      expect(card.deduct(fare)).to eq described_class::DEFAULT_BALANCE
-    end
-  end
-
   describe "#in_journey?" do
     it "returns false when card initialized" do
       expect(card.in_journey?).to be_falsey
@@ -51,9 +43,16 @@ describe Oystercard do
 
   describe "#touch_out" do
     it "sets @journey to true" do
+      card.top_up(described_class::MINIMUM_AMOUNT)
       card.touch_in
       card.touch_out
       expect(card.in_journey?).to be_falsey
+    end
+
+    it "charges card on touch out" do
+      card.top_up(described_class::MINIMUM_AMOUNT)
+      card.touch_in
+      expect{ card.touch_out }.to change{ card.balance }.by(-Oystercard::MINIMUM_AMOUNT)
     end
   end
 end
