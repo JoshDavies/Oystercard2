@@ -2,6 +2,7 @@ require "oystercard"
 
 describe Oystercard do
   let(:card) { Oystercard.new }
+  let(:station) { double("Station") }
 
   describe "#balance" do
     it "displays the current balance" do
@@ -32,27 +33,40 @@ describe Oystercard do
   describe "#touch_in" do
     it "sets @journey to true" do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in
+      card.touch_in(station)
       expect(card.in_journey?).to be_truthy
     end
     it "prevents touching in if card does not have enough money" do
       empty_card = Oystercard.new(0.00)
-      expect(empty_card.touch_in).to eq "Not enough money"
+      expect(empty_card.touch_in(station)).to eq "Not enough money"
+    end
+
+    it 'remembers entry station after touch in' do
+      card.top_up(5)
+      card.touch_in(station)
+      expect(card.entry_station).to eq station
     end
   end
 
   describe "#touch_out" do
     it "sets @journey to true" do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in
+      card.touch_in(station)
       card.touch_out
       expect(card.in_journey?).to be_falsey
     end
 
     it "charges card on touch out" do
       card.top_up(described_class::MINIMUM_AMOUNT)
-      card.touch_in
+      card.touch_in(station)
       expect{ card.touch_out }.to change{ card.balance }.by(-Oystercard::MINIMUM_AMOUNT)
+    end
+
+    it 'sets station to nil after touch out' do
+      card.top_up(described_class::MINIMUM_AMOUNT)
+      card.touch_in(station)
+      card.touch_out
+      expect(subject.entry_station).to eq nil
     end
   end
 end
