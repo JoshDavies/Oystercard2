@@ -40,5 +40,4 @@ class Oystercard
   def deduct(fare = MINIMUM_AMOUNT)
     @balance -= fare
   end
-
 end
