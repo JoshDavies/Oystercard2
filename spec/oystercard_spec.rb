@@ -19,13 +19,13 @@ describe Oystercard do
 
   describe "#top_up" do
     it "adds amount to the balance" do
-      card.top_up(20.00)
+      card.top_up(20)
       new_balance = card.balance
-      expect(new_balance).to eq (described_class::DEFAULT_BALANCE + 20.00)
+      expect(new_balance).to eq (described_class::DEFAULT_BALANCE + 20)
     end
 
     it "limits balance maximum" do
-      too_much_money = card.top_up(described_class::MAXIMUM_BALANCE + 1.00)
+      too_much_money = card.top_up(described_class::MAXIMUM_BALANCE + 1)
       expect(too_much_money).to eq "top_up unsuccessful - over max balance #{described_class::MAXIMUM_BALANCE}"
     end
   end
@@ -39,7 +39,7 @@ describe Oystercard do
       expect(card.in_journey?).to be_truthy
     end
     it "prevents touching in if card does not have enough money" do
-      empty_card = Oystercard.new(0.00)
+      empty_card = Oystercard.new(0)
       expect(empty_card.touch_in(entry_station)).to eq "Not enough money"
     end
 
