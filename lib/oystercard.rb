@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class Oystercard
   attr_reader :balance, :entry_station, :previous_journeys
   DEFAULT_BALANCE = 0.00

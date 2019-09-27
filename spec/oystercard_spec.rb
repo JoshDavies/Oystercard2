@@ -1,4 +1,5 @@
 require "oystercard"
+require "journey"
 
 describe Oystercard do
   let(:card) { Oystercard.new }
@@ -29,11 +30,7 @@ describe Oystercard do
     end
   end
 
-  describe "#in_journey?" do
-    it "returns false when card initialized" do
-      expect(card.in_journey?).to be_falsey
-    end
-  end
+
 
   describe "#touch_in" do
     it "sets @journey to true" do
